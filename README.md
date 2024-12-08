@@ -33,8 +33,7 @@ First, we model multi-dimensional chemical processes using early cycle and guidi
 The **ChemicalProcessModel** predicts chemical process variations by using input voltage matrix $U$. Given a feature matrix $\mathbf{F} \in \mathbb{R}^{(C \times m) \times N}$ (see paper for more details on the featurization taxonomy), where $N$ is the number of features, the model learns a composition of $L$ intermediate layers of a neural network:
 
 $$
-\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\ \quad\quad\quad\quad\\quad\quad\quad 
-\hat{\mathbf{F}} = f_\theta(U) = \left(f_\sigma^{(L)} \left(f_\theta^{(L)} \circ \cdots \circ f_\sigma^{(1)} \left(f_\theta^{(1)}\right)\right)\right)(U) quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\\quad\quad\quad\quad\ \text{(1)}
+\hat{\mathbf{F}} = f_\theta(U) = \left(f_\sigma^{(L)} \left(f_\theta^{(L)} \circ \cdots \circ f_\sigma^{(1)} \left(f_\theta^{(1)}\right)\right)\right)(U) 
 $$
 
 
@@ -110,9 +109,7 @@ It is time-consuming and cost-intensive to enumerate continuous temperature veri
 We propose a physics-informed transferability metric to quantitatively evaluate the effort in the knowledge transfer. The proposed transferability metric integrates prior physics knowledge inspired by the Arrhenius equation:
 
 $$
-\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\ \quad\quad\quad\quad\\quad\quad\quad\quad\\quad\quad\quad\quad\  \quad\quad\quad  \hspace{0.55em} 
 r = A e^{-\frac{E_a}{k_B T}}
-\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\ \quad\quad\quad\quad\\quad\quad\quad\quad\\quad\quad\quad\quad\  \quad\quad\quad (2)
 $$
 
 where: $A$ is a constant, $r$ is the aging rate of the battery, $E_a$ is the activation energy, $k_B$ is the Boltzmann constant, and $T$ is the Kelvin temperature.
@@ -120,9 +117,7 @@ where: $A$ is a constant, $r$ is the aging rate of the battery, $E_a$ is the act
 The Arrhenius equation provides us with important information that the aging rate of batteries is directly related to the temperature. Therefore, the Arrhenius equation offers valuable insights into translating the aging rate between different temperatures. We observe the domain-invariant representation of the aging rate ratio, consequently, the proposed Arrhenius equation-based transferability metric $AT_{score}$ is defined as:
 
 $$
-\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\ \quad\quad\quad\quad\\quad\quad\quad\quad\\quad\quad\quad\hspace{0.7em}
 AT_{score}  = \frac{r_{target}}{r_{target}} = \frac{e^{-\frac{E_a^s}{k_B T_s}}}{e^{-\frac{E_a^t}{k_B T_t}}}
-\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\ \quad\quad\quad\quad\\quad\quad\quad\quad\\quad\quad\quad\quad(3)
 $$
 
 where $E_a^s$ is the activation energy of the source domain, $E_a^t$ is the activation energy of the target domain, $T_s$ and $T_t$ are the Kelvin temperatures of the source domain and the target domain, respectively.
@@ -130,17 +125,13 @@ where $E_a^s$ is the activation energy of the source domain, $E_a^t$ is the acti
 The closer the $AT_{score}$ is to 1, the more similar the source domain and target domain are, so the better the knowledge transfer is expected. Since the dominating aging mechanism is unknown (characterized by $E_a$) as a posterior, we alternatively determine the aging rate by calculating the first derivative concerning the variations on the predicted chemical process curve:
 
 $$
-\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\ \quad\quad\quad\quad\\quad\quad\quad\quad\\quad\quad\quad\quad\  \quad\quad\quad\quad
 r = \frac{d\hat{F}}{dC}
-\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\ \quad\quad\quad\quad\\quad\quad\quad\quad\\quad\quad\quad\quad\  \quad\quad\quad\quad\\ (4)
 $$
 
 where $\hat{F}$ is the predicted chemical process feature matrix. We linearize the calculation in adjacent cycles by sampling the point pairs on the predicted chemical process:
 
 $$
-\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\ \quad\quad\quad\quad\\quad\quad\quad\quad\\quad\quad\quad\quad
 r = \frac{\sum_{i=0}^n \left(F_{\text{end}+i} - F_{\text{start}+i}\right)}{n \cdot (\text{end} - \text{start})}
-\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\ \quad\quad\quad\quad\\quad\quad\quad\quad\\quad\quad\quad\hspace{0.35em}(5)
 $$
 
 where $n$ is the number of point pairs, $start$ and $end$ are the cycle indices where we start and end the sampling, respectively, $F_{end+i}$ and $F_{start+i}$ are the feature values for the $(start+i)th$ and $(end+i)th$ cycles, respectively.
@@ -148,9 +139,7 @@ where $n$ is the number of point pairs, $start$ and $end$ are the cycle indices 
 This calculation mitigates the noise-induced errors, resulting in a more robust aging rate computation. For domains where the aging mechanism is already known (different domains share the same \( E_a \)), the $AT_{score}$ can be expressed in the following form:
 
 $$
-\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\ \quad\quad\quad\quad\\quad\quad\quad\quad\\quad\quad\quad\hspace{0.5em}
 \text{AT}_{\text{score}}^{source \to target} = e^{\frac{E_a}{k_B} \left( \frac{1}{T_t} - \frac{1}{T_s} \right)}
-\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\ \quad\quad\quad\quad\\quad\quad\quad\quad\\quad\quad\quad\(6)
 $$
 
 where $\frac{E_a}{k_B}$ is a constant value. This formula ensures that, in cases where the aging mechanism is known, we can calculate transferability between different domains using only the temperatures of the source and target domains. This allows the model for continuous temperature generalization without any target data.
@@ -199,17 +188,13 @@ w_at_25.append(w25)
 Using the physics-informed transferability metric, we assign a weight vector $W_{1\times K} = \{W_i\}$ (where $K$ is the number of source domains, $W_i$ is the ensemble weight for the $i$-th source domain) to source domains to quantify the contributions when predicting the chemical process of the target domain. The $W_i$ is defined as:
 
 $$
-\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\ \quad\quad\quad\quad
 W_i = \left( \left| AT_{\text{score}}^{\text{source } i \to \text{target}} - 1 \right| \cdot \left( \sum_{j=1}^K \frac{1}{\left| AT_{\text{score}}^{\text{source } j \to \text{target}} - 1 \right|} \right)^{-1} \right)
-\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\ \quad\quad\quad\quad \hspace{1.1em}(7)
 $$
 
-where, $AT_{\text{score}}^{\text{source } i \to \text{target}}$ is the $AT_{\text{score}}$ from the $i$-th source domain to the target domain. This mechanism ensures the source domain with better transferability has a higher weight, effectively quantifying the contribution of each source domain to the prediction of the target domain. From Equation (3) and Equation (7), we can obtain the aging rate of the target domain:
+where, $AT_{\text{score}}^{\text{source } i \to \text{target}}$ is the $AT_{\text{score}}$ from the $i$-th source domain to the target domain. This mechanism ensures the source domain with better transferability has a higher weight, effectively quantifying the contribution of each source domain to the prediction of the target domain. From $AT_{score}$ and the weight vector, we can obtain the aging rate of the target domain:
 
 $$
-\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\ \quad\quad\quad\quad\\quad\quad\quad\quad\quad
 r_{\text{target}} = \sum_{i=1}^K W_i \cdot AT_{\text{score}}^{\text{source } i \to \text{target}} \cdot r_{\text{source } i}
-\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\ \quad\quad\quad\quad\\quad\quad\quad\quad\\quad\ \hspace{0.35em}(8)
 $$
 
 
@@ -222,9 +207,7 @@ See the __Methods__ section of the paper for more details.
 Battery chemical process degradation is continuous, which we call the "Chain of Degradation". We have predicted the $r_{\text{target}}$ aging rates of each feature in the target domain, which can be further used to predict the chemical process. Therefore, when using aging rates $r_{\text{target}}$ to calculate each target feature vector $F_{\text{(C×m)×1}}$ in the feature matrix $F_{\text{(C×m)×N}}$, the $i$-th cycle target feature vector $F_{\text{target}}^i$ should be based on $F_{\text{target}}^{i-1}$ and $r^{i-1}$:
 
 $$
-\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\ \quad\quad\quad\quad\quad\quad\quad
 F_{\text{target}}^i = F_{\text{target}}^{i-1} + \sum_{j=i}^K W_j \cdot A_{\text{score}}^{\text{source } j \to \text{target}} \cdot r_{\text{source } j}^{i-1}
-\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\ \quad\quad\quad\quad\quad\quad\quad\quad\(9)
 $$
 
 where $F_{\text{target}}^i$ is the feature value of the target domain in the $i$-th cycle, $r_{\text{source } j}^{i-1}$ is the aging rate of source domain $j$ at the $(i-1)$-th cycle.
@@ -312,9 +295,7 @@ if test_tmp == "T55":
 We have successfully predicted the battery chemical process. It is assumed that the chemical process of the battery deterministically affects the aging process, we therefore use the predicted chemical process to predict the battery degradation curve. The battery degradation trajectory model learns a composition of $L$ intermediate mappings:
 
 $$
-\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\ \quad\quad\quad\quad\\quad\quad\quad 
 \hat{\mathbf{D}} = f_\theta(\hat{\mathbf{F}}) = \left(f_\sigma^{(L)} \left(f_\theta^{(L)} \circ \cdots \circ f_\sigma^{(1)} \left(f_\theta^{(1)}\right)\right)\right)(\hat{\mathbf{F}})
-\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\ \quad\quad\quad\quad\\quad\quad\quad (10)
 $$
 
 where $L = 3$ in this work. $\hat{\mathbf{D}}$ is predicted battery degradation trajectories, $\theta = \{\theta^{(1)}, \theta^{(2)}, \theta^{(3)}\}$ is the collection of network parameters for each layer, $\hat{\mathbf{F}}$ is the predicted battery chemical process feature matrix, and $f_\theta(\hat{\mathbf{F}})$ is a neural network predictor. All layers are fully connected. The activation function used is Leaky ReLU (leaky rectified linear unit), denoted as $f_\sigma$. 
